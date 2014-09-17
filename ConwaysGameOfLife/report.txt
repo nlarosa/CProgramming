@@ -1,0 +1,121 @@
+CSE 20211
+
+Lab #7
+
+Nicholas LaRosa
+
+life.c, scene1.life, scene2.life, scene3.life, scene4.life, scene5.life
+
+	The user can draw pre-made Conway's Game of Life patterns by using the greater-than
+key to pipe one of the "scene.life" files into the "life" executable. For example, to draw
+"scene1.life", the user would execute the command "./life < scene1.life". When "scene1" is
+drawn, the user can see four shapes, called "still-life" objects, that remain stationary and 
+are created out of 'X' characters. This is how all objects are drawn within this version of 
+Conway's Game of Life. When "scene2" is drawn, the user can see four different "oscillators" 
+that progress through multiple stages to return to their original shape, inducing an infinite 
+pattern. When "scene3" is drawn, the user can see four objects that move across the screen in
+different directions. Two of these objects are simpler than the other two and are classified
+as "spaceships" on Conway fan sites. When "scene4" is drawn, the user can see an "explosion"
+that occurs on the screen. There is a substantially long symmetrical chaos that occurs before
+this "explosion" settles down into simple oscillators. Lastly, when "scene5" is drawn, the 
+user can see what is called a "beacon-maker", where a "fuse" is lit and disintegrates, leaving
+behind three "beacons", which are flashing oscillators, and a single simple oscillator. For
+all of these drawings, the user can exit the display by pressing CTRL^C.
+
+	From the programmer's perspective, this version of Conway's Game of Life involves 
+numerous functions that are called based on the initial input. The program is built to accept
+both user input and file input, both of while utilize the same form of commands. The first two
+functions executed within the Game of Life initialize and display the board to the screen. In 
+order that the "rules of life" be applied correctly to the game board, two multi-dimensional
+arrays were created within the main method of "life.c" and then initialized via the "intialize"
+function. This intializing process involved filling all elements of the array with blank spaces.
+The "display" function then cleared the screen, labeled each row and column and lastly printed 
+every array element to the screen. After these functions were called, the process of waiting 
+for input could begin.
+
+	The "getInput" and "checkInput" work together to process user input. The "getInput" 
+function is called continually until input enters the buffer, when at this point the function
+confirms that the input is a single character. As seen in the comment section of "life.c",
+the command selection for this Game of Life is made up of the following:
+
+	If the user enters a, then ask for coordinates where to add a new live cell. (No action is needed if it is already alive.)
+	If the user enters r, then ask for coordinates where a cell should be removed. (No action is needed if it is already dead.)
+	If the user enters n, then advance the simulation to the next "tick" by applying the rules of the game.
+	If the user enters q, then quit the program.
+	If the user enters p, then play the game forever without asking for more input. (You can press control-C to stop the program.)
+
+If the user does provide a single character, this input is then sent to the "checkInput"
+function, which uses a switch statement to determine which function to call next. The Game
+does not perform any action if the user command is not one of the five provided.
+
+	When the user enters an 'a', the "addCommand" and "addCell" functions are called.
+First, the "addCommand" function gets coordinate input from the user and makes sure the 
+coordinate input is legitimate, and if so, the "addCell" function is called to give life
+to the specified coordinates. In this Game of Life, life is represented by an 'X' and dead
+cells are blank spaces. When the user enters an 'r', the "removeCommand" and "removeCell"
+functions are called in the same fashion as "addCommand" and "addCell". The only difference
+is that "removeCell" replaces the coordinates specified with a blank space instead of an
+'X'. Once these functions have completed their action, "getInput" is again called.
+
+	When the user enters an 'n', the "tickCommand", "applyRules", "copyBoards", and the
+"checkLife" set of functions are all utilized. The "tickCommand" function is first called,
+and this in turn applies the "rules of life" to the current board through the "applyRules"
+function. For this version of the game, a dead cell with 3 live neighbors gains life, and 
+only a live cell with either two or three live neighbors can survive. The function set 
+"checkLife" checks for life surrounding a specified position on the board. This is done by
+first sorting positions into top, bottom, left, right and middle "checkLife" functions based
+on their coordinates. Then, a counter keep track as each possible surrounding position is
+checked for the 'X' of life. This counter variable is returned as an integer through the 
+directional branch function to the main "checkLife" function. Thus, "tickCommand" merely
+calls "checkLife" at every board position and applies the rules of life and death accordingly.
+Within this function, actual array element changes are only made to the next array, leaving
+the current board unaffected. This way, the changing of life and death that occurs within
+the current board does not affect other positions prematurely. Lastly, the "copyBoards" 
+function is called. This function copies the contents of the next board to the current board,
+allowing the current board to reflect the rules of life and death. Additionally, this prepares
+the current board for when the rules are again applied in the future. The new current board
+is then printed to the screen.
+
+	When the user enters a 'p', the "playCommand" function is called. This function
+merely calls the "tickCommand" function in an infinite loop, with a half-second pause in
+between each refresh via "usleep(...)". Because "tickCommand" involves a displaying of the current
+board, it also involves a clearing of the screen, which allows this infinite loop of calls
+to "tickCommand" have the appearance of a smooth animation. Of course, after the 'p' command
+is called, the user cannot call any other command except by restarting the program after
+using the UNIX cancel command CTRL^C.
+
+	When the user enters a 'q', a global integer boolean is changed from false to true.
+This boolean is checked before every call to "getInput", thus determing when the program can
+continue running. A global variable was determined to be the best choice due to its simplicity 
+and the inability to pass values from the "getInput" function. This inability is due to the fact
+that if "getInput" calls an infinte loop through the "playCommand" function, it would fail to
+ever return a value. Thus, the boolean can be changed whenever the user enters 'q', which in turn
+would be seen within the main method, allowing the program to quit.
+
+	These pre-made drawings were built by entering numberous command lines in a separate
+file and piping these files into the "life" executable. Because "scanf" only cares what input is
+in the buffer after a "\n" is detected, command calls could be separated by "\n" within this file
+to allow multiple commands to be executed at once. For example, to add two live cells to the board
+at (col, row) positions (2,2) and (3,3) and then to apply to rules of life forever, the following 
+could be piped to "life" through a separate file:
+
+	a 2 2
+	a 3 3
+	p
+
+Thus, "scanf" can read this input as three separate commands when this file is piped to the "life"
+executable. This allows multiple live cells to be added to the board, after which the animation
+can begin via the "playCommand" function.
+
+	The output of this program was verified mostly by working with examples of famous Conway
+Game of Life objects available on the internet. There are many examples of "still-life" objects, 
+oscillating objects and moving objects available for testing purposes. Thus, I was able to add live
+cells to the board and begin animation, after which I could visually verify the animation versus
+those available on the internet to confirm that the rules were being correctly applied in my version
+of the Game of Life. Additionally, at one point during the debugging process the "checkLife" function
+printed the number of live cells surrounding each position of interest, allowing me to confirm that
+the "checkLife" set of functions was working correctly. Overall, I was able to get many interesting 
+examples to work successfully, so I believe this version of the Game of Life is stable.
+
+Works cited: www.conwaylife.com/wiki
+

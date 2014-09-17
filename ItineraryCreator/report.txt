@@ -1,0 +1,93 @@
+CSE 20211
+Lab #9
+Nicholas LaRosa
+
+travel.c
+
+	From the user's perspective, this program creates a travel itinerary
+based on flight choices made by the user. The user first chooses a origin
+airport using its respective three-character code, and all flights departing
+from this airport are then displayed. The user then chooses a second flight
+(that departes later than the arrival of the previous flight), and so on. This
+pattern continues until the user specifies "end" or "cancel". The "end"
+command stops giving the user any flight choices and instead creates an
+itinerary of all the flights previously chosen by the user. This itinerary is
+present in the file "itinerary.txt". The "cancel" command instead reverses the
+user's previous choice, allowing the user to overwrite his/her last flight
+choice (or select a new airport if the choice is early in the selection
+process). An itinerary file is also created if no other flights depart later
+than the arrival time of the previously selected flight. This is because all
+the flights listed on the itinerary must occur in the same 24-hour day.
+	
+	From the programmer's perspective, this program involves numerous
+functions to keep track of all the information being processed. Firstly, a
+structure was created that kept track of the five characteristics of a flight.
+This structure was then defined as its own Flight type. This allowed for easy
+handling of the structures. The first functions in this program work to
+convert between string and integer for the time and cost values associated
+with each flight. Because these characteristics are displayed as strings when
+taken as input, it is important for comparison purposes to store these as
+integers. These functions are used in combination with the function
+"getFlight" in order to extract the information within a line of data and
+create a flight structure. Additionally, the functions "printFlight" and
+"printFlights" use these functions in order to print both individual flights
+and lists of flights to standard output.
+	
+	Next comes a hadny function called "copyFlight" that transfers flight
+information from one structure to another. Because the original structure is
+copied to a structure pointer, the structures within an array can be easily
+modifed. One of the most important functions is "readFile", which transfers
+data line-by-line from the given file "flights.txt" to an array declared
+within the main function. This allows the rest of our program to run to
+completion, since the rest of the functions manipulate this data.
+
+	Next come a series of functions that prepare for the final program
+objectives. Firstly, there are the "countFlights" and "findFlights" functions
+that, given a user-specified origin airport, count the number of flight
+options the user has and then creates a pointer to a heap array that contains
+these flight option structures. Next, there are the "countOptions" and
+"findOptions" functions. Similar to the previous two function, these instead
+take in an entire flight structure and find those flights that leave from the
+previous destination at a time later than the previous flight arrival time.
+This allows for the user to travel from one airport to another without having
+to go back in time. Before these four functions are used together, the
+functions "airportExists" and "getAirport" are created. These functions get
+the initial user input of a three-character airport code and make sure that
+this airport exists somewhere within the data.
+
+	Once this is completed, the three functions "getFirstChoice",
+"getNextChoice" and "buildItinerary" work together to complete the objectives
+of this program. The function "getFirstChoice" gets the user-specified origin
+airport from the "getAirport" function and subsequently generates a list of
+options for the user to select from. The user choice is then passed onto the
+"getNextChoice" function, which runs recursively until the user specifies the
+command "end". The "getNextChoice" function generates a list of user options
+from the "findOptions" function and gathers the user input. Depending on the
+input, the function will either call itself with a new user-specified choice,
+call itself with the previous user-specified choice (ie. when command "cancel"
+is used), or call the "buildItinerary" function. This "buildItinerary"
+function opens a new file "itinerary.txt" and subsequently prints the user's
+itinerary in a nice format, which includes the total cost of all flights. This
+same function is also called when no more flights are available to the user.
+No matter the reason, this program will always result in an itinerary file
+being created for the user's enjoyment.
+
+	The output of this program was verified to be correct through simple
+guess-and-check methods. First of all, it was necessary that the user's input
+of an origin airport result in a list of options that corresponded to the
+flights departing from this airport. Next, any choice that the user made had
+to lead to a list of options where the destination airport was the same as the
+arrival airport, and also where the arrival time was before the departure
+time. Additionally, the user could not be able to choose any flights that
+arrived or departed the next day. Whenever there were no flights left to
+choose from, an itinerary had to be produced, ending the program. Also,
+whenever the user entered to "end" command, an itinerary had to be produced,
+ending the program. Lastly, if the user entered the "cancel" command, the list
+of choices had to change to become the previous listing, siginifying that the
+previous flight choice could now be erased. Because in all cases the program
+printed a correct itinerary, it is logical to assume that this program
+operates correctly in most of its aspects. The only problem experienced was
+the inability to dynamically allocate memory using "realloc", a problem that
+was solved by merely limiting the input to 100 lines.
+
+

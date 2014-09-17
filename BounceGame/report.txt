@@ -1,0 +1,88 @@
+CSE 20211
+Nicholas LaRosa
+Lab #3
+
+Rotating Animation (rotate.c)
+
+	This program is basically a videogame where the user controls a bold circle
+in the graphics window using the 'w', 'a', 's' and 'd' keys. The user must attempt to
+avoid colliding with rotating "civilians" whose motion is randomized upon the initiation
+of the program. Additionally, the user can randomize the speeds and radii of the "civil-
+ians" by pressing numbers '1' through '5' on the keyboard, which also resets the motion
+of the user-controlled sphere. The game can be quit at any time using the 'q' key. If the
+user leads the sphere into any of the window boundaries, the sphere "bounces", changing
+direction while maintaining its velocity. Lastly, whenever the user leads the sphere into 
+contact with any of the five "civilians", the game automatically exits.
+
+	As expected, a program like this is much more complicated from the programmer's
+perspective compared to the user's perspective. During the initiation of the program, many
+variables had to be established. This included the radii of the "civilians" and the user
+sphere, the starting velocity and position of the sphere, and the properties of the "civil-
+ians". These properties of the "civilians", which included their speeds, radii and direction,
+were stored in an array, allowing easier access later in the program. It was determined that
+the deltaT for the program's animation would be .01 second, which required 100 frames every 
+second. Once these variables had been defined and the graphics window was opened, it was time
+to begin the infinite loop that continually opens a graphics window until a "break" statement 
+is called. This gives the appearance of a continually active graphics window.
+
+	Within this infinite loop, the graphics window must first be cleared. This way, any 
+previous drawings are erased, allowing the animation to run smoothly without any remaining
+marks. Once this is completed, the next step involves the function "gfx_event_waiting()", 
+which returns false immediately unless a key is pressed. Thus, this command allows the loop
+to run without interruption until a key is pressed by the user. When the user actually presses 
+a key, the value of the key press is stored as a character, retrieved from the "gfx_waiting()" 
+function. This value is then forced through a switch statement to determine which specific key 
+was pressed. If the key was '1' through '5', the speeds of the "civilians" are randomized using 
+the "rand()" function (previously seeded using srand(time(NULL));) and the position/velocity of 
+the user-controlled sphere are returned to their original values. If the key was 'w', 'a', 's' 
+or 'd', the velocity of the sphere is changed where 'w' subtracts from the y-velocity (upwards), 
+'a' subtracts from the x-velocity (left), 's' adds to the y-velocity (downwards) and 'd' adds
+to the x-velocity (right). Additionally, within each of these case statements is another call 
+of the "gfx_event_waiting()" function and a switch statement for every other possible key. For 
+example, inside the case statement for the 'w' button is a switch statement for another key 
+press that has cases for the 'a', 's' and 'd' buttons. This allows the user to press multiple 
+directional keys simultaneously with the appropriate results. The last case is for the 'q' 
+button, which, if pressed, changes the boolean value "quit" to true. This value is checked 
+after the switch, quitting the program if the boolean happens to be true.
+
+	Once the user input has been determined and the velocity of the sphere and "civilians"
+has been determined, the next step involves drawing each of the civilians. This is done via a
+"for" loop that evaluates once for every civilian (so five times). Within each iteration of this
+loop a circle "civilian" is drawn through the use of a for loop that evaluates itself for every
+degree from 0 to 360, drawing a short segment of the circle during each iteration. The circular
+path of the "civilians" is accomplished by keeping track of the current angle measurements for
+each "civilian" in their respective arrays. Thus, this angle measurement is incremented by a value
+during every iteration of the infinite loop, a value that is dependent upon the determined speed 
+of that specific "civilian". Basically, one circle is drawn for every "civilian" during every
+iteration of the infinite loop. As the infinite loop continues, these circles move in a circular
+motion because the center at which each circle is drawn changes according to a trigonmetric 
+relationship resulting in a circular shape.
+
+	Before these "civilian" circles are actually drawn to the screen, however, it is import-
+ant that their positions are compared to the current position of the user sphere. This is done by
+checking to see if the centers of each of the "civilians" are within range of user sphere, ie. if 
+the x-values of any of the "civilian" centers are between (center of user sphere x-value - radius 
+of user sphere) and (center of user sphere x-value + radius of user sphere), and similarly for the 
+y-values of any of the "civilian" centers. If any of the civilians collide with the user sphere, 
+the "quit" boolean value returns true, exiting the graphics window. Also, if the user sphere collides 
+with any of the walls of the graphics window, the velocity is multiplied by negative one, allowing 
+the sphere to "bounce" and remain in the window.
+
+	Lastly, the user-controlled sphere must be drawn to the screen. This involves the same 
+methods as drawing circles as the "civilians", but the new center of the user sphere changes during 
+every iteration based on the current velocity in the x and y directions. Specifically, the current 
+center of the sphere changes by the velocity multiplied by the deltaT, which is .01 second. Lastly, 
+a second circle is drawn with a slightly smaller radius at the same position, making the user con-
+trolled ball "bold". The program ends with a call of the "gfx_flush()" function, which actually 
+displays the drawings to the graphics window, and a call of the "usleep(10000);" function, which 
+pauses the program for ten milliseconds, which is the time equal to our deltaT.
+
+	The only way to confirm the accurate performance of the program was to play many trial games. 
+By the end of production, the user-controlled sphere responded accordingly to single and multiple 
+calls to the 'w', 'a', 's' and 'd' directional keys. The user sphere bounced off the "walls" of the 
+graphics window whenever a collision occurred. Additionally, the graphics window closed when the 'q' 
+key was pressed and also when the user sphere made contact with any of the "civilians". Lastly, the
+motion of the "civilians" changed speed whenever the buttons '1' through '5' were pressed and the 
+center of the user sphere was reset accordingly. There are no fundamental bugs with this program, 
+there are only extra (but unnecessary) features that could be added with more time and effort.	
+

@@ -1,0 +1,12 @@
+
+The LaRosa Travel Agency Presents...
+
+	Your Itinerary:
+
+	Origin		Destination	Departure	Arrival		Cost
+
+	SBN		DTW		8:07		11:19		$363
+	DTW		ATL		15:23		18:44		$128
+
+	Total Cost: $491
+

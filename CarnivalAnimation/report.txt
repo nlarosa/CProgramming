@@ -1,0 +1,73 @@
+CSE 20211
+Nicholas LaRosa
+Lab #4
+
+Carnival Ride (carnival.c)
+
+	From the user perspective, this program simply displays a sickening
+carnival ride. Whoever is unfortunate enough to ride this roller coaster is
+placed in one of four seats, which are spun vertically around a common axis.
+This axis is then spun around another axis, which is ultimately spun around a
+final axis. Thus, there are three dimensions of circular motion. Lastly, this
+three-dimensional chaos is placed on a spring that is resistant to the effects
+of gravity and friction, a spring that is ultimately attached to the top of
+the graphics window. In total there are four dimensions of motion, most likely 
+leading to a sickening experience. The user, after viewing the ride for their 
+desired length, can exit the graphics window using the 'q' key.
+
+	From the programming perspective, the code for this work requires five
+functions, most of which utilize eachother in order to continually add new
+dimensions of motion. First off, a function "draw_curve(...)" was made in order 
+to draw a simple circle on the screen. This was done via trigonometric means, 
+where a small segment of the circle was drawn for every iteration of a loop 
+across an angle measurement specified by the user (2*pi radians for an entire 
+circle). This trigonometric method was used in each dimension of motion. Secondly, 
+a function "draw_rotating_seats(...)" was created that rotates four of these 
+circle "seats" in a circle, with each of the seats attached to a middle axis by
+a "metal bar". Thirdly, a function "draw_rotating_group(...)" rotates the entire 
+group of four seats (that is already spinning) in a circular path, and connects 
+the middle axis of the group to the center of this circular path with another 
+"metal bar". Fourthly, a function "draw_rotating_whole(...)" rotates the rotating 
+group of spinning seats in a circular path, with a "metal bar" attaching the center 
+of the rotating group to the center of this larger circular path. Lastly, a function 
+"draw_springing_whole(...)" causes the entire triple-rotating to "bounce" up and 
+down according to a sinusoidial function, with a "metal spring" attaching the center 
+of the triple-rotating group to the top of the graphics window. The main function 
+of this program merely calls this last function, "draw_springing_whole(...)" within 
+a while loop that continually opens a graphics window to create seamless motion 
+(interrupted only by a .1 second call to "usleep(...)"). This while loop contains 
+a nested "gfx_event_waiting()" if-loop that allows the animation to continue until 
+the user presses the 'q' key, at which point a boolean becomes true, causing the 
+program to exit and the graphics window to close.
+
+	Each of the four dimensions of motion involves calling the function
+that initiated the lower-dimension motions. For example, the fourth dimension
+of motion (spring) called the third dimension of motion (the triple-rotating group 
+of seats). This way, the fourth function was only calling one other function,
+even though this nested function called another function, which called another
+function, and so on. Because of this complicated nesting, four global
+variables were created to keep track of the angle measurements for each of the
+dimensions of motion. This way, because each dimension of motion required 
+steadily incremented angle measurement, the current angle locations of each of 
+the dimensions of motion could be monitored and easily accessed by each
+"parent" dimension function. The only way to prevent the use of global
+variables would be to pass each function's angle measurement across functions,
+which would be very cumbersome. Additionally, the use of global variables
+allowed each angle measurement to be easily incremented by a unique value
+dependent upon that specific dimension of motion. This added variety to the
+"roller coaster" and allowed each of the separate dimensions to rotate, spin,
+or bounce at different speeds. Lastly, the global variable names were easily
+kept track of and not confused with other variables.
+
+	The output of this program can be verified to be correct by merely
+viewing the "roller coaster" and seeing that it contains four dimensions of
+motion. Firstly, the group of four seats can be seen to be spinning around a
+circular axis. Next, this spinning group can be seen to be rotating in a
+vertical circular fashion around an axis. This axis, in turn, can be seen to
+be moving in a larger circular path. Finally, the center of this large
+circular path is attached to a "spring" that is resistant to any effects of
+gravity. Each segment of the "roller coaster" has different colors, courtesy
+of the many calls to "gfx_color(...)" within each dimension's function.
+Lastly, the 'q' button exits the program when pressed. This indicates that all
+of the requirements have been met for this program.
+

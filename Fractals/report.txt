@@ -1,0 +1,64 @@
+CSE 20211
+Lab #5
+Nicholas LaRosa
+
+Fractal Gallery (gallery.c)
+
+	As its name might suggest, this program displays a gallery of fractals 
+in the graphics window for the viewer's enjoyment. When the program first starts, 
+multiple "shells" of different colors appear on a "sandy" yellow background. These 
+"shells" are different sizes and have different orientations in addition to having 
+assorted colors. When the user presses the space bar, a new set of these "shells" 
+appears with again different traits. Lastly, when the user presses the 'q' key, 
+the program ends and the graphics window closes.
+
+	This program is slightly more complicated from the programmer's perspective. 
+Firstly, two functions had to be created, one that draws a curve and another that 
+uses recursion to create a "shell". This first function, called "draw_curve(...)",
+accepts as its parameters a center for the curve, the curve's radius, and the angle 
+range over which this curve will be drawn. The function then draws multiple small 
+lines that create curves of descending radii, creating the impression that these 
+curves are solid colors. The second function, called "fractal_curve(...)", accepts as 
+its parameters the center of the fractal curve, the radius of the fractal curve, the 
+angle orientation of the fractal curve, and the three RGB color values of the fractal 
+curve. This second function first contains a base case that prevents an infinite loop 
+by ending the drawing once the curves become too small. It then contains a drawing step,
+which calls the "draw_curve(...)" function to draw a solid circle at the center spec-
+ified in the parameters of "fractal_curve(...)". A circle is drawn by specifying the 
+angle range in "draw_curve(...)" to be 0 to 2pi. Lastly, this function calls itself with 
+modified parameters. Because the fractal curves are being drawn in a spiral fashion to
+create the "shells", the parameters change by moving the new drawing location in a
+circular motion while also decreasing the radius from the center. Thus, when this re-
+cursive function runs, it continually calls itself, which continually draws curves in
+a spiraling motion (toward the center specified by the first call to the recursive fun-
+ction) until the radius of the drawn curves is smaller than 2 pixels. 
+
+	Once these two functions were created, they could be used to generate multiple
+variations of the "shells". In order to keep track of all of the different shell traits,
+four arrays were created, two being multi-dimensional. These multi-dimensional arrays 
+contained the RGB color values and the center (x,y) coordinates. The other two arrays 
+contained the the radii and angle orientations of the "shells". Before the graphics
+window was opened (upon running the program), these values were randomly generated for
+a set of 25 different "shells". This was done via the "rand()" function, which generated
+a random integer in a range determined by the modulus operator. When the program starts,
+the "fractal_curve(...)" function is called once for every different "shell", with the 
+randomly generated parameters implemented easily using specified array indences for each
+"shell". Once these "shells" are drawn on a "sandy" background (with the background color
+set using the "gfx_clear_color(...)" function), the program waits until the user either
+presses the spacebar or the 'q' key. If the spacebar is pressed, the parameters for all
+25 "shells" are again randomly generated and the graphics window is cleared, allowing these
+new "shells" to be drawn. If the 'q' key is pressed, a boolean integer is set to true,
+quitting the program and closing the graphics window.
+
+	The output for this program was verified by running it numerous time and making
+sure that 25 "shells" were indeed being drawn. The range of the "shell" sizes and their
+center coordinates had to be modified numerous times to make sure the "shells" are visible
+and not big enough to cover other "shells". Because these "shells" were created in the 
+same fashion as the "Shrinking Squares" fractal in Part 1 (fractals.c), it was fairly easy
+to implement circles into a fractal once Part 1 was completed. Of course, much modification
+was needed in order to fine tune the fractal in order to produce drawings that actually
+looked like "shells". Lastly, the spacebar and 'q' key were tested to work as intended.
+When the spacebar is pressed, a new set of 25 "shells" are drawn (with the previous 
+"shells" being erased). When the 'q' key is pressed, the graphics window closes. Thus, 
+this program works successfully and provides some great fractal art.
+

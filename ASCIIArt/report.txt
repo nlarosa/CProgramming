@@ -1,0 +1,52 @@
+Nicholas LaRosa
+CSE 20211
+Lab Report 2
+
+ASCII Art Graph (graph.c)
+
+	This program is simple from the user's perspective, considering there are no inputs 
+given by the user. A plot of the function y = sin(2sin(2sin(2sin(x)))) from x = 0 to x = 4*pi 
+is represented within the terminal standard output through an ASCII art graph. In this ASCII 
+art graph, the x-axis is represented vertically down the page and the y-values are displayed 
+through blocks of pound signs (#) that are displayed horizontally (thus technically in line 
+with an implicit y-axis) with lengths proportional to their actual y-values. The x and y values 
+are displayed next to each row of pound signs to help with the user's understanding. Of course, 
+each row of the graph is quite meaningless without all the other rows, as viewing the graph in 
+its totality is the best way of visualizing the plot itself. Lastly, the maximum and minimum 
+values of the plot are outputted along with their corresponding x values.
+
+	From the programmer's perspective, this assignment involves a substantial amount of
+experimentation with formatting, in addition to basic work with loop structures. The main process
+of this program involves a while loop that continues throughout the range of x, with x being 
+iterated by however large a step desired. The magnitude of this step determined how many rows made
+up the ASCII art graph, i.e. how accurate and large the graph was as a whole. In this example, the
+range of x was from 0 to 4*pi and x was iterated by 0.1, allowing for 125 steps and a 125-line
+ASCII art graph. For every iteration of x, the corresponding value of y is first calculated using
+the "sin()" function available from the C math library. This value is then turned into its ASCII
+equivalent by multiplying it by 20 (it was chosen that 20 pound signs would equal a y-value of 1)
+and rounding this product to the nearest integer. Once this value is retrieved, it is time to actually
+construct each string that makes up each row. This requires extensive formatting, as the string must
+be able to represent both the negative and positive regions of the y-axis. If the ASCII y-value is 
+negative, a string of spaces preceded the string of pound signs, with the spaces and pound signs taking
+up approximately 22 spaces in the string. The vertical x-axis is represented by a "|" at the 23rd 
+character within each string. Thus, if the ASCII y-value is positive, a set of 22 spaces is followed 
+by a "|" and then a set of pound signs (the left side of the x-axis represents the negative y-axis, 
+and the right side represents the positive y-axis). These strings were constructed with the help of 
+the "printf" function, which allows for the determination of reserved space for a value. If a string 
+of 22 spaces needed to be followed by a "|", the necessary code would read:
+
+	printf("%22s|", " "); 
+
+	where "%22s" signifies that 22 characters are reserved for the string, which in this case is
+a space. As a last step in this program, the current y-value must be compared to the current maximum 
+and minimum values. If the y-value is less than the minimum, the current y-value becomes the new minimum.
+Similarly, if the current y-value is greater than the maximum, the current y-value becomes the new
+maximum. These max and min y-values are outputted to the user, along with their x-values.
+
+	The only reliable method of evaluating correctness in this program involved using a TI-84
+calculator to plot the same function. Additionally, the calculator could be used to verify the y-values
+found for every iteration of x. In the case of this program, every y-value was verified through the use
+of a calculator. Lastly, the general shape yielded by the calculator's plot of the function was visibly
+similar to the shape yielded by this program's "graph", providing credible verification.
+
+

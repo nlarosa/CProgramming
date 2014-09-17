@@ -1,0 +1,116 @@
+CSE 20211
+Lab #8
+Nicholas LaRosa
+
+crossword.c
+
+	When the user starts this program, they are first asked to enter a list of words.
+Although instructions are not provided on the home screen, if the user tries to enter a word
+made up of more than 15 characters, this word is not stored and the user is notified of the
+restriction. Additionally, if the user enters a word containing any non-alphabetic characters,
+this word is not stored and the user is again notified of the requirements for a valid word. 
+Lastly, if the user tries to enter another word after already providing a list of 20 words,
+the list is cut off at 20 words and the user is notified. If the user has a list of less than
+20 words, they can prematurely end their list by entering a '.' instead of a word. Once the
+user's list of word ends, a crossword puzzle is generated. The first game board that is printed
+to the screen contains the solution to the crossword puzzle, which includes all possible words
+intersecting at shared characters. If any of the words could not be fit into the puzzle legally,
+meaning (1) they shared no characters with words already placed, (2) their placements did not
+leave 1 or more spaces between other words, or (3) their placements did no fit inside the board,
+the user was notified of the specific words left out of the puzzle. Nest, the actual crossword 
+puzzle is printed, which merely contains blank spaces where the user's words must be placed.
+Finally, clues are provided to aid in the completion of the puzzle. These clues include the
+starting (column, row) coordinates of each word, the direction each word was placed, and an
+anagram (jumbled version) of each word.
+
+	From the programmer's perspective, this crossword puzzle generator contains numerous
+functions that call eachother in sequential format. These functions were created in a bottom-
+up fashion, meaning the functions created grew over time, with each successive function calling
+the previous function. To begin, the main function created numerous arrays to contain the 
+information required to create this game. The first two of these arrays were multidimensional
+and contained the elements of our two 15x15 game boards (the solution and actual puzzle boards).
+Another multidimensional array contained the user's word list, being composed of 20 character
+arrays of 15 characters each. This provided the necessary space to hold, at maximum, 20 words
+of maximum character length 15. The next array created was made up of 20 pointers to character
+arrays. The purpose of this array will be discussed in a later paragraph. Two more arrays were
+created to hold the coordinates of the placed words and their respective directions. Lastly,
+an integer array was created to keep track of which of the user's words were actually placed
+on the board, helping determine which clues should be given to the user.
+
+	The first functions created initialized and displayed the game boards. The solution
+board had be be initialized with all '.' characters before words could be placed in corssword
+fashion. Next, the "getInput" function asks the user for input and checks each string entered
+for validity. This includes checking each string for the terminating '.' character. Once this
+terminating '.' character is seen, the "getInput" function passes on the size of the user's list
+to the "upperWords" function. This function then converts all the user's words to upper case
+using the "toupper" built-in function on every character of each word. The size of the user's
+list is then passed to the "pointWords" function. Throughout this program, the size of the user's
+list is passed to speed up the process of analyzing the user's words (because it tells us when
+we have finished analyzing all of the strings). The "pointWords" function utilizes the array
+of pointers to character arrays that was mentioned earlier. Basically, this function stores
+the memory locations of all of the user's words in a array of pointers. This allows the words
+to be referenced and sorted easily throughout the rest of the program.
+
+	Like previous functions, the "pointWords" function passes the size of the user's word
+list to the "sortWords" function. The "sortWords" function rearranges the array of pointers so
+that the first memory location in the array of pointers points to the longest word provided by
+the user. This pattern continues until the last memory location in the array of pointers points
+to the shortest word provided by the user. This "sortWords" function then passes the number of 
+words provided by the user to the "firstWord" function. The "firstWord" function is called in order 
+to place the longest word provided by the user, which is pointed to by the first pointer in our 
+array of pointers, at the center of the game board. The final passing of the number of words provided 
+by the user occurs when the "firstWord" function is called by the "configureWords" function. 
+
+	The "configureWords" function is the backbone of the crossword puzzle generator. For 
+every word in the user's list, this function checks every position on the board for a valid 
+positioning. This check for valid positioning is done via the "checkPlacementHoriz" and 
+"checkPlacementVert" functions. These functions both iterate through the characters of a given 
+word, making sure that the word only intersects another word once at a common character. Addition-
+ally, the word cannot run outside of the array and must have one or more blank spaces separating 
+itself and other words already on the board. Thus the "checkPlacementHoriz" function will return 
+true only if a certain word can legally fit horizontally at a certain position, and the 
+"checkPlacementVert" function will return true only if a certain word can legally fit vertically 
+at a certain position. Thus, the "configureWords" function checks every position of the board and 
+places the current word at its first legal position. The actual placing of the word on the board 
+takes place through the "placeWord" function. If a certain word cannot be placed legally (the 
+"checkPlacement" functions return false at every board position) then the user is notified of this 
+failure and the game continues placing words.
+
+	While making the necessary changes to the game board, the "configureWords" function also 
+stores information regarding the word placements. The arrays initialized in the main method include 
+arrays to store the starting coordinates of each placed word and the direction with which each of 
+the words were placed. The "configureWords" function stores respective data to these arrays each 
+time that it places a new word at a legal position on the board. In order to create an anagram "clue" 
+for each placed word, the "strfry" function is utilized. This function scrambles a string when it is 
+given a pointer to that string. Thus, the "strfry" function could be applied to each of the pointers 
+in our array of pointers, replacing our initial list of words with a list of anagram "clues" to each 
+of these words. Additionally, another array is modified to indiciate which words provided by the user 
+are actually placed on the board. Thus, when the "printClues" function is called, the clues only for 
+words on the board are printed. All of these functions are called through the "playCrossword" 
+function, which takes as its parameters every array that is initialized in the main method. Also 
+included in this function is the graphic header for the puzzle generator and numerous calls to
+"displayBoard" in order to display both the solution to the puzzle generated and the actual game board. 
+The actual game board is created after the solution is created through the "convertPuzzle" function, 
+which basically replaces every empty spot on the solution board with a '#' and every character on the
+solution board with a space. Finally, this "playCrossword" function is called within the main method, 
+allowing the program to run when the "crossword" executable file is run by the user.
+
+	In order to verify the results of this program, many example word lists were provided to 
+the "crossword" executable via the '<' symbol, which could be used the pipe a file containing a 
+word list to the crossword puzzle generator. Firstly, the program had to respond correctly to user 
+input. If the user entered non-alphabetic characters or tried to enter a word longer than 15 characters, 
+the user was asked again for a word. Additionally, if the user tried to enter more than 20 words in 
+their list, the list was truncated to 20 words. Next, it was important to check that each word was 
+intersecting other words at common letters and that no words were directly adjacent to others (ie. 
+there was at least one board space separating parallel words). If any words were left out of the puzzle, 
+the user was correctly notified. Once this was verified through many trial word lists, the clue output 
+had to be verified to be correct. For one, the coordinates of each clue word had to correspond to the 
+starting position of each respective word on the solution board. Additionally, the direction of place-
+ment had to be correct for each word. The anagrams were verified to be scrambled versions of the initial 
+words. Lastly, the solution and puzzle boards had to be displayed correctly. The solution board correctly 
+contained the user's list words displayed in a crossword fashion and the puzzle board correctly contained 
+a '#' at every blank solution position and a space at every position containing a character on the 
+solution board. After running many trial games, including the sample word list provided in the lab 
+instructions, and recieving the correct response through the solution board, it was assumed that 
+the program ran correctly.
+

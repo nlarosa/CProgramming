@@ -1,0 +1,75 @@
+Nicholas LaRosa
+CSE 20211
+Lab Report 1
+
+The Solar Energy Calculator (prog3.c)
+
+	This program is meant to calculate the amount of solar cell panelling
+necessary to continually power a certain number of average American homes. 
+The user is asked to enter the efficiency of their solar cells, the average
+hours of sunlight available for these cells, and the number of homes they
+would like to power. The efficiency of the solar cells must be a number (float) 
+between 1 and 100, inclusive. For every percent efficiency, a solar cell
+generates 10 watt-hours. The average hours of sunlight available for the cells
+must be a number (float) between 1 and 24, inclusive, and the number of homes
+being powered must be a number (float) greater than 1. Once these inputs are
+given, the user is presented with the number of 1-square-meter solar cell panels 
+necessary to power this group of homes. Additionally, the user is given the 
+number of these solar cell panels necessary per home.
+
+	The structure of this program involves a three-step process. Within
+the main (and only) method, the variables must first be declared. All of the
+variables within the program were floating-point numbers, which allowed for
+smooth calculation during the final step. One constant was declared during
+this first step, "house_power", which established the amount of power used by
+the average American home to be 14,000 watt-hours. Secondly, the input from
+the user must be processed using the "printf" and "scanf" commands. The
+program exits early if the range conditions of each variable are not met, or
+if any of the inputs given by the user contain non-digit characters. This task
+was completed with "if" statements that checked the range expressions and the
+return value of each "scanf" command. If the "scanf" command does not return 1,
+meaning that the input was not a digit-only literal, then the program notifies
+the user of the required input and exits early via a "return 0;" statement.
+Lastly, the main calculation is completed using the user inputs. The output is 
+delivered to the user before a final "return 0;" statement ends the program.
+
+	The idea behind this calculator's equation was found at:
+
+http://www.nmsea.org/Curriculum/Primer/How_is_electrical_energy_measured.htm
+
+	This website provided the formula to calculate the area of solar cells
+necessary to power a home. Additionally the website provided the facts that the average 
+US home uses 14,000 watt-hours per day and that for every 1 percent efficieny, 10 watt-
+hours are produced by a solar cell panel. It also contained an example problem that 
+helped check this program for any calculation errors. According to the website:
+
+	"...	A typical photovoltaic solar cell can convert about 15% 
+	of this to electricity, that is, about 150 watts (the best cells 
+	in the laboratory can go somewhat higher, up to about 34%, or 340 
+	watts)... US residences presently use about 14 kilo-watt-hours of 
+	electrical energy a day on average... Suppose you have five good
+	hours of sunlight during the day. Then, using the formula above, 
+	the area in solar panels you would need to obtain the average 
+	household draw of 14 kilo-watt-hours per day would be:
+
+		 Area needed 	= 14,000 watt-hours / ( 150 watts/m2 x 5 hours ) 
+				= 18.6 square meters = 200 square feet	..."
+
+	Using The Solar Energy Calculator, this same problem was given as
+input, with the results printed below:
+
+	Welcome to the Solar Energy Calculator 5000!
+	This program calculates the number of solar panelling necessary to power a certain number of homes.
+	Please enter the percent efficiency of your solar panels (1-100): 15
+	Please enter the average hours of sunlight available in your area (1-24): 5
+	Please enter the number of homes being powered by these solar cells (>1): 1
+	In order to power these homes, 18.666666 panels measuring 1 square meter each are necessary, or 18.666666 panels per home.
+
+	Thus, it can be seen that this program correctly calculates a basic 
+example set of inputs. The program is also very restrictive on the input values 
+allowed, making it difficult to produce incorrect results. Any results outside
+of the variable's allowed ranges results in an early exit, preventing faults such 
+as a division by zero. Additionally, if any non-digit inputs are given, the program 
+will exit before any calculations can be made. Therefore, no incorrect results 
+have been found to occur within numerous test trials.
+

@@ -1,0 +1,126 @@
+CSE 20211
+Lab #6
+Nicholas LaRosa
+
+computer.c
+
+	This program allows the user to play a virtual game of Othello against a computer 
+opponent. When the game begins, a set of instructions are printed to the screen, after which 
+the user, who is Player X throughout the course of the game, can make his/her first move. 
+Because this is the game of Othello, and the user is playing against virtual Player O, the 
+user must attempt to trap enemy "soldiers" between two of his/her "soldiers". This means trap-
+ping 'O' pieces in between 'X' pieces. Any 'O' pieces that are in between a former 'X' piece 
+and a newly-placed 'X' piece will be flipped to 'X' pieces during Player X's turn. Additionally,
+multiple lines of enemies can be flipped if a single placement completes multiple pairs with
+enemy pieces in between. However, the player needs to keep in mind that a newly-placed piece 
+must be adjacent to any other piece on the board. Also, if the user attempts to enter an invalid 
+move (such as a non-empty space or a non-existent space), they will be prompted again for their 
+move until it is valid. After the user's turn is complete, the computer Player O makes its move, 
+which maximizes the number of flipped enemies. The user, Player X, then takes his/her turn, and 
+this pattern continues until all the spaces on the board are filled with either players' pieces. 
+Thus, since the default board is 8x8, with an initial board configuration of two 'X's and two 
+'O's, a total of (8*8)-4 = 60 moves are played with this board configuration. No matter the 
+board size, there are always initially these two 'X's and two 'O's. Once the board is completely
+filled with pieces, the game is ended, and whichever player has the most of its pieces still
+present on the board is the winner. A tie is possible when both players have the same number
+of their respective pieces remaining on the board.
+
+	From the programmer's perspective, this game is made up of numerous small functions
+calling eachother, many recursively. The first two functions (initialize, configure) prepare the 
+game board by filling the board's multidimensional array with the necessary characters. The next
+function (display) prints the current game board to the screen. Thus, any changes made to the 
+board array are reflected by this displaying function. The last board function (check) checks to
+see if the board is completely filled with characters, and returns a boolean integer false if the
+board is filled, signifying the end of the game, and true if not filled. Thus, the first two 
+board functions are only called once when the game is beginning, while the displaying and checking
+functions are called once every turn to display the current board and to check if the board has
+enough empty spaces to continue gameplay.
+
+	Two useful functions (getPlayer, getOpposingPlayer) determine the current player based on 
+the current turn number that is kept track of within the main function. These two functions are 
+called many times throughout the course of the program to determine whether Player X (odd-number 
+turns) or Player O (even-number turns) should be modifying the board. Additionally, the "checkWinner" 
+function determines the winner of the current game by counting the respective numbers of Player X 
+and Player O's pieces. Thus, the "checkWinner" function is called only when the "checkBoard" function
+evaluates to false, meaning the game is over because the board is filled with pieces.
+
+	The function "getInput" is used to gather input from the user (Player X), while the
+set of functions beginning with "checkMove" make sure that this input corresponds to a valid move 
+(adjacent to other pieces and within the board limits). The valid user input is then sent to the set 
+of functions beginning with "makeMove". The five functions in the "makeMove" set correspond to moves 
+on the four edges or anywhere within the middle of the board. These functions determine the location 
+of the move and call the respective "checkCapture" function. The "checkCapture" functions act recur-
+sively by calling themselves if there is an adjacent enemy found and continually calling themselves 
+as the line of enemies continues. Once the line of enemies has ended with a piece of the current player, 
+these functions call their respective "makeFlips" function. The "makeFlips" functions act recursively 
+in the opposite fashion as "checkCapture" by reversing direction in the line of enemies and flipping 
+every enemy until a piece of the current player is found. Thus, the "makeFlips" functions cannot be 
+called unless the "checkCapture" functions have determined there to be a line of enemies that can be 
+legally flipped. Both function sets "checkCapture" and "makeFlips" contain one function for every direction 
+surrounding a move (8 in total), allowing each direction function to avoid checking for non-existent 
+array indeces. The "makeFlips" functions also return the number of flips made of each group of enemies, 
+which is done by incrementing a function parameter through recursion. This number of flips is passed 
+down through each successive function call until it is returned by the "makeMove" function. Therefore, 
+since the "makeMove" function is returning the number of flips made by the specified move, it will 
+return 0 if no line of enemies was found (if "makeFlips" was never called). In order to allow for 
+multiple directions of flipping, the "makeMove" directional functions (which call multiple "check-
+Capture" functions if there are multiple enemies surrounding a new move) keep a running sum of the 
+number of flips made by each returned "makeFlips" function. 
+
+	The "makeMove", "checkCapture" and "makeFlips" functions all accept an integer boolean (comp) 
+that allows these functions to change behavior whether or not they are dealing with the computer's 
+move. If it is the user's turn, these functions are allowed to actually impose the flip changes on 
+the board array. However, if it is the computer's turn, these functions do not impose flip changes 
+on the board because the computer tests all valid moves to see which causes the most flips on the 
+current board configuration. Thus, this board configuration is not actually changed by the computer 
+until it determined the best possible move. The computer find this best possible move during each of
+its turns via the "AImove" and "AIcheckMove" functions. 
+	
+	The "AIcheckMove" set of functions is basically the same as the "checkMove" set of functions. 
+However, instead of printing instructions to the screen when the user enters invalid input, the 
+"AIcheckMove" functions return a true integer boolean when the computer is attempting to test a 
+valid move. Thus, when the "AIcheckMove" function evaluates to true, the "AImove" function can begin. 
+This function iterates through each row and column, testing each move for validity. For every valid 
+move, the "makeMove" function is called, with the integer boolean "comp" specified as true. This 
+function returns the number of flips made by the specified move, and if this number of flips is 
+greater than the current maximum flips made by the current best move, then this new move becomes the 
+current best move for the current turn. Because the "makeMove" function does modify the position of 
+the added computer piece (which allows for the number of flips in a line of enemies to be counted), 
+when the computer is testing many moves it must reset the position after every tested move. This 
+prevents any changes from being made on the board array until the best move is determined. If two 
+tested moves cause the same number of flips, the move that is a corner piece will be given preference, 
+followed by the move that is an edge piece. This ranking of similar moves is done via the "AIrank" 
+function. Thus, the computer will be more likely to choose moves in the corners or on the edges of 
+the board because these moves are less likely to be flipped by the enemy. As we can see, the computer 
+does not look forward any moves but does give thought to both the number of flips made by a potential 
+move and the move's position on the board, creating a robust player.
+
+	The program's main function utilizes the vast array of functions to allow the human player 
+and computer player to switch off making moves in a game of Othello. First, the main function prints 
+instructions to the screen for the user's enjoyment. Then, the board is initialized, configured and
+displayed. A while loop is then started, beginning the actual gameplay. The contents of this while 
+loop are evaluated as long as the "checkBoard"i function evaluates to true, meaning there are still 
+valid spots for a pieces to be placed. Within the while loop the current turn number is incremented,
+and if it is currently an odd turn number, the user makes his/her move (via "getInput"). If it is an 
+even turn number, the computer makes its move. Once either player completes his/her move, the updated 
+board is printed to the screen. Once the board is completely filled with player pieces, the 
+"checkWinner" function is called and a winner is declared!
+
+	The best method of verifying the performance of this program was continually playing the 
+game and making sure that the correct pieces were being modified throughout the course of the game. 
+First, the two-player version of Othello (othello.c) was verified to run correctly after many trial
+games. Many different moves were tested to make sure that enemy pieces were flipped when they became 
+trapped and that the game ended when the board was completely filled with pieces. Once the two-player 
+version of Othello was complete, the function sets had to be modified to allow for a computer opponent. 
+The most important modification was allowing the function sets to pass down the number of flips made 
+by a move. Once these changes were made, the program was tested by again playing through many trial 
+games. During the trial stages of production on this version, all possible computer moves and the 
+respective number of flips made by these moves were displayed to the screen during the computer's turn. 
+Additionally, the best computer move was displayed. This allowed analysis to be done on whether the 
+correct number of flips were being returned from the "makeMove" function and whether the "AImove" 
+function was selecting the best move out of all the valid moves. Once it was confirmed that the "AImove" 
+and "makeMove" functions were indeed working correctly, the final program was established to merely print 
+out the maximized move. Because of the lengthly nature of this program, the trial game method of debugg-
+ing seemed like the best option, and it is likely that most, if not all, initial bugs were eliminated 
+in the final version of this program. 
+
